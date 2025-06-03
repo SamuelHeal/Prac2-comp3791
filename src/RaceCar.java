@@ -11,7 +11,7 @@ class RaceCar {
         this.name = name;
         this.engine = new Engine(EngineType.STANDARD);
         this.tyres = new Tyres(TyreType.MEDIUM);
-        this.aeroKit = new AerodynamicKit(AeroPackage.BALANCED);
+        this.aeroKit = new AerodynamicKit(AeroPackage.STANDARD_KIT);
         this.maxFuelCapacity = 100.0;
         this.currentFuel = maxFuelCapacity;
     }
