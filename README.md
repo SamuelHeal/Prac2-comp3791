@@ -94,3 +94,7 @@ Maximises downforce at the cost of significant drag, ideal for short, technical 
 ```
 
 Prompt 4:
+
+```
+Reformat the console display for the Aerodynamic Kits to be in an easy to read table format, as the current list based format is frustrating to scroll through. You do not need to include the description or performance impact text. Only include the performance metrics associated to each kit.
+```

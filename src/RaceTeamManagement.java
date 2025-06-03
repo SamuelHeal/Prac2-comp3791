@@ -108,21 +108,28 @@ public class RaceTeamManagement {
         System.out.println("\n=== AERODYNAMIC KIT OPTIONS ===");
         AeroPackage[] aeros = AeroPackage.values();
         
+        // Table header
+        System.out.println("┌─────┬─────────────────────────┬──────────┬───────────┬───────────┐");
+        System.out.println("│ No. │ Aerodynamic Kit        │ Straight │ Cornering │ Fuel Eff  │");
+        System.out.println("├─────┼─────────────────────────┼──────────┼───────────┼───────────┤");
+        
+        // Table rows
         for (int i = 0; i < aeros.length; i++) {
             AeroPackage aero = aeros[i];
-            System.out.printf("%d. %s\n", i + 1, aero.displayName);
-            System.out.printf("   Performance: Straight %.2fx, Cornering %.2fx, Fuel Eff %.2fx\n", 
+            System.out.printf("│ %-3d │ %-23s │ %8.2fx │ %9.2fx │ %9.2fx │%n", 
+                             i + 1, aero.displayName, 
                              aero.straightLineSpeed, aero.corneringSpeed, 1.0/aero.fuelConsumption);
-            System.out.printf("   %s\n\n", aero.description);
         }
         
-        System.out.print("Select aerodynamic kit (1-" + aeros.length + "): ");
+        // Table footer
+        System.out.println("└─────┴─────────────────────────┴──────────┴───────────┴───────────┘");
+        
+        System.out.print("\nSelect aerodynamic kit (1-" + aeros.length + "): ");
         
         int choice = scanner.nextInt();
         if (choice > 0 && choice <= aeros.length) {
             car.customizeAero(aeros[choice - 1]);
             System.out.println("\nAerodynamics updated to: " + aeros[choice - 1].displayName);
-            System.out.println("Description: " + aeros[choice - 1].description);
         } else {
             System.out.println("Invalid selection.");
         }
