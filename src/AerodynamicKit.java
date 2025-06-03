@@ -13,12 +13,29 @@ class AerodynamicKit {
         }
     }
     
-    public double getStraightLineSpeedMultiplier() {
-        return aeroPackage.straightLineSpeed * (1 + (upgradeLevel - 1) * 0.05);
+    // Get effective drag coefficient with upgrade modifications
+    public double getEffectiveDragCoefficient() {
+        return aeroPackage.dragCoefficient * (1 - (upgradeLevel - 1) * 0.03);
     }
     
-    public double getCorneringSpeedMultiplier() {
-        return aeroPackage.corneringSpeed * (1 + (upgradeLevel - 1) * 0.08);
+    // Get effective downforce with upgrade modifications
+    public int getEffectiveDownforce() {
+        return (int)(aeroPackage.downforce * (1 + (upgradeLevel - 1) * 0.08));
+    }
+    
+    // Get effective top speed with upgrade modifications
+    public int getEffectiveTopSpeed() {
+        return (int)(aeroPackage.topSpeed * (1 + (upgradeLevel - 1) * 0.02));
+    }
+    
+    // Get effective fuel efficiency with upgrade modifications
+    public double getEffectiveFuelEfficiency() {
+        return aeroPackage.fuelEfficiency * (1 + (upgradeLevel - 1) * 0.05);
+    }
+    
+    // Get effective cornering ability with upgrade modifications
+    public int getEffectiveCorneringAbility() {
+        return Math.min(10, aeroPackage.corneringAbility + (upgradeLevel - 1));
     }
     
     public AeroPackage getPackage() { return aeroPackage; }

@@ -98,3 +98,16 @@ Prompt 4:
 ```
 Reformat the console display for the Aerodynamic Kits to be in an easy to read table format, as the current list based format is frustrating to scroll through. You do not need to include the description or performance impact text. Only include the performance metrics associated to each kit.
 ```
+
+Prompt 5:
+
+```
+Replace the metrics currently used in the aerodynamic kits with the following ones:
+Drag Coefficient (Cd)
+Downforce (kg)
+Top Speed (km/h)
+Fuel Efficiency (km/l)
+Cornering Ability (rating out of 10)
+
+In addition, replace the current name values of the aero packages with the primary key as the current setup results in the primary key displaying in the customisation options, but the name key displaying in the car descriptions (eg. STANDARD_KIT is shown in the customisation options but Basic Aerodynamics is displayed when displaying the cars - this should not be the case as it is confusing)
+```

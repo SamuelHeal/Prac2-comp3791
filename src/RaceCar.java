@@ -11,7 +11,7 @@ class RaceCar {
         this.name = name;
         this.engine = new Engine(EngineType.STANDARD);
         this.tyres = new Tyres(TyreType.MEDIUM);
-        this.aeroKit = new AerodynamicKit(AeroPackage.STANDARD_KIT);
+        this.aeroKit = new AerodynamicKit(AeroPackage.STANDARD_AERODYNAMICS);
         this.maxFuelCapacity = 100.0;
         this.currentFuel = maxFuelCapacity;
     }
@@ -37,32 +37,46 @@ class RaceCar {
     }
     
     public double getOverallSpeed(Track track, WeatherCondition weather) {
-        double baseSpeed = 100.0;
+        // Base speed calculation using aerodynamic top speed and engine multipliers
+        double baseSpeed = aeroKit.getPackage().topSpeed;
         double engineSpeed = baseSpeed * engine.getSpeedMultiplier();
         double tyreSpeed = engineSpeed * tyres.getGripMultiplier();
         
+        // Adjust for track type - downforce helps on technical tracks
         if (track.getType().equals("Street")) {
-            tyreSpeed *= aeroKit.getCorneringSpeedMultiplier();
-        } else {
-            tyreSpeed *= aeroKit.getStraightLineSpeedMultiplier();
+            double downforceBonus = Math.min(0.2, aeroKit.getPackage().downforce / 2000.0);
+            tyreSpeed *= (1.0 + downforceBonus);
         }
         
         return tyreSpeed * weather.speedReduction;
     }
     
     public double getFuelConsumptionPerLap(Track track, WeatherCondition weather) {
-        double baseFuel = 2.5;
-        double engineFuel = baseFuel / engine.getFuelEfficiency();
-        double aeroFuel = engineFuel * aeroKit.getPackage().fuelConsumption;
-        double trackFuel = aeroFuel * track.getFuelMultiplier();
+        // Base fuel consumption calculation using aerodynamic efficiency
+        double baseFuelPerKm = 1.0 / aeroKit.getPackage().fuelEfficiency;
+        double lapConsumption = baseFuelPerKm * track.getLapLength();
         
-        return trackFuel * weather.fuelConsumptionIncrease;
+        // Engine efficiency affects consumption
+        double engineConsumption = lapConsumption / engine.getFuelEfficiency();
+        
+        // Drag coefficient affects fuel consumption
+        double dragPenalty = 1.0 + (aeroKit.getPackage().dragCoefficient - 0.3) * 0.5;
+        double aeroConsumption = engineConsumption * dragPenalty;
+        
+        // Track and weather effects
+        double trackConsumption = aeroConsumption * track.getFuelMultiplier();
+        
+        return trackConsumption * weather.fuelConsumptionIncrease;
     }
     
     public double getTyreWearPerLap(Track track, WeatherCondition weather) {
         double baseWear = 2.0;
         double trackWear = baseWear * track.getTyreWearMultiplier();
         double tyreWear = trackWear / tyres.getType().durabilityMultiplier;
+        
+        // High downforce increases tyre wear due to increased grip forces
+        double downforceWear = 1.0 + (aeroKit.getPackage().downforce / 1000.0) * 0.1;
+        tyreWear *= downforceWear;
         
         return tyreWear * weather.tyreWearIncrease;
     }
