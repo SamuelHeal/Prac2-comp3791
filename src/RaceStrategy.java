@@ -1,3 +1,5 @@
+import java.util.*;
+
 class RaceStrategy {
     private List<PitStop> pitStops;
     private double totalTime;
