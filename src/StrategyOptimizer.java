@@ -52,7 +52,29 @@ class StrategyOptimizer {
     private double calculateLapTime(RaceCar car, Track track, WeatherCondition weather) {
         double baseTime = 90.0; // 90 seconds base lap time
         double speed = car.getOverallSpeed(track, weather);
-        return baseTime * (100.0 / speed);
+        double lapTime = baseTime * (100.0 / speed);
+        
+        // Factor in acceleration (lower is better), effect depends on weather
+        double acceleration = car.getAcceleration(); // 0-100 km/h time in seconds
+        double baseline = 4.0; // F1-level acceleration
+        double accelEffectPerSec;
+        switch (weather) {
+            case DRY:
+                accelEffectPerSec = 0.02; // 2% per second
+                break;
+            case WET:
+                accelEffectPerSec = 0.03; // 3% per second
+                break;
+            case EXTREME_WET:
+                accelEffectPerSec = 0.04; // 4% per second
+                break;
+            default:
+                accelEffectPerSec = 0.02;
+        }
+        double accelEffect = (acceleration - baseline) * accelEffectPerSec;
+        lapTime *= (1.0 + accelEffect);
+        
+        return lapTime;
     }
     
     private TyreType selectOptimalTyre(Track track, WeatherCondition weather, int currentLap) {

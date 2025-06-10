@@ -81,6 +81,11 @@ class RaceCar {
         return tyreWear * weather.tyreWearIncrease;
     }
     
+    public double getAcceleration() {
+        // In the future, could factor in tyres and aero
+        return engine.getEffectiveAcceleration();
+    }
+    
     // Getters
     public String getName() { return name; }
     public Engine getEngine() { return engine; }

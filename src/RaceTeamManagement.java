@@ -76,13 +76,20 @@ public class RaceTeamManagement {
     
     private void customizeEngine(RaceCar car) {
         System.out.println("\nEngine Options:");
-        System.out.println("1. STANDARD (Speed: 1.0x, Fuel Eff: 1.0x)");
-        System.out.println("2. TURBOCHARGED (Speed: 1.3x, Fuel Eff: 0.8x)");
-        System.out.println("3. HYBRID (Speed: 1.1x, Fuel Eff: 1.2x)");
+        EngineType[] engines = EngineType.values();
+        for (int i = 0; i < engines.length; i++) {
+            EngineType engine = engines[i];
+            System.out.printf("%d. %s (Speed: %.1fx, Fuel Eff: %.1fx, Accel: %.2f s 0-100km/h)\n",
+                i + 1,
+                engine.name(),
+                engine.speedMultiplier,
+                engine.fuelEfficiency,
+                engine.acceleration
+            );
+        }
         System.out.print("Select engine: ");
         
         int choice = scanner.nextInt();
-        EngineType[] engines = EngineType.values();
         if (choice > 0 && choice <= engines.length) {
             car.customizeEngine(engines[choice - 1]);
             System.out.println("Engine updated to " + engines[choice - 1]);
@@ -209,6 +216,7 @@ public class RaceTeamManagement {
         System.out.printf("Speed Rating: %.1f\n", car.getOverallSpeed(track, weather));
         System.out.printf("Fuel per Lap: %.2f L\n", car.getFuelConsumptionPerLap(track, weather));
         System.out.printf("Tyre Wear per Lap: %.2f%%\n", car.getTyreWearPerLap(track, weather));
+        System.out.printf("Acceleration (0-100 km/h): %.2f s\n", car.getAcceleration());
     }
     
     private void displayCars() {
