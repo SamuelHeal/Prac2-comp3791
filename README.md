@@ -111,3 +111,35 @@ Cornering Ability (rating out of 10)
 
 In addition, replace the current name values of the aero packages with the primary key as the current setup results in the primary key displaying in the customisation options, but the name key displaying in the car descriptions (eg. STANDARD_KIT is shown in the customisation options but Basic Aerodynamics is displayed when displaying the cars - this should not be the case as it is confusing)
 ```
+
+Prompt 6:
+
+```
+Now factor in acceleration to to the outcomes for the race optimisation strategy, ensuring there is three variations in acceleration.
+```
+
+Prompt 7:
+
+```
+Add an acceleration component to each engine. Make the acceleration upgradeable and put it in a seperate class.
+```
+
+Prompt 8:
+
+```
+Ensure that the acceleration differs in different types of weather.
+```
+
+Prompt 9:
+
+```
+In the code, ensure that the acceleration effects the pit stop time.
+```
+
+Prompt 9:
+
+```
+In the code, ensure that the acceleration effects performance at the start of the race.
+```
+
+

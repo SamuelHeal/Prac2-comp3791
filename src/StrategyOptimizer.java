@@ -13,6 +13,12 @@ class StrategyOptimizer {
         double wearPerLap = car.getTyreWearPerLap(track, weather);
         double lapTime = calculateLapTime(car, track, weather);
         
+        // Start-of-race acceleration bonus
+        double accel = car.getAcceleration();
+        double startBonus = Math.max(0, (6.0 - accel) * 0.5); // 0.5s per 0.1s below 6.0s
+        startBonus = Math.min(startBonus, 1.0); // cap at 1.0s
+        totalTime -= startBonus;
+        
         for (int lap = 1; lap <= track.getTotalLaps(); lap++) {
             // Check if pit stop is needed
             boolean needsFuel = currentFuel < fuelPerLap * 2;
@@ -22,7 +28,7 @@ class StrategyOptimizer {
                 double fuelToAdd = car.getMaxFuelCapacity() - currentFuel;
                 TyreType newTyres = needsTyres ? selectOptimalTyre(track, weather, lap) : null;
                 
-                PitStop pitStop = new PitStop(lap, needsTyres, newTyres, fuelToAdd);
+                PitStop pitStop = new PitStop(lap, needsTyres, newTyres, fuelToAdd, car.getAcceleration());
                 strategy.addPitStop(pitStop);
                 
                 currentFuel = car.getMaxFuelCapacity();
