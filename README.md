@@ -136,10 +136,38 @@ Prompt 9:
 In the code, ensure that the acceleration effects the pit stop time.
 ```
 
-Prompt 9:
+Prompt 10:
 
 ```
 In the code, ensure that the acceleration effects performance at the start of the race.
 ```
 
+Prompt 11:
 
+```
+Write a function that collects all the Fuel Tank info and uses that info to trigger a Pit stop when the fuel tank is low.
+```
+
+Prompt 12:
+
+```
+In the code, ensure that the new checkAndTriggerPitStopForLowFuel function affects the Lap time
+```
+
+Prompt 13:
+
+```
+Modify the current code to add a "Cornering" function and applying this to the Tyre Type and Body Kit.
+```
+
+Prompt 14:
+
+```
+In the code, ensure the cornering function is affected by the Tyre durability.
+```
+
+Prompt 15:
+
+```
+In the code, ensure the cornering function affects Lap Time.
+```
