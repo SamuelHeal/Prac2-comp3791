@@ -20,30 +20,41 @@ class StrategyOptimizer {
         totalTime -= startBonus;
         
         for (int lap = 1; lap <= track.getTotalLaps(); lap++) {
-            // Check if pit stop is needed
-            boolean needsFuel = currentFuel < fuelPerLap * 2;
+            // Use the new function to check for low fuel and trigger pit stop
+            PitStop fuelPitStop = checkAndTriggerPitStopForLowFuel(car, lap, track, weather);
             boolean needsTyres = simulatedTyres.getCurrentWear() > 80.0;
-            
-            if (needsFuel || needsTyres) {
+            PitStop tyrePitStop = null;
+            if (needsTyres) {
                 double fuelToAdd = car.getMaxFuelCapacity() - currentFuel;
-                TyreType newTyres = needsTyres ? selectOptimalTyre(track, weather, lap) : null;
-                
-                PitStop pitStop = new PitStop(lap, needsTyres, newTyres, fuelToAdd, car.getAcceleration());
-                strategy.addPitStop(pitStop);
-                
-                currentFuel = car.getMaxFuelCapacity();
-                if (needsTyres) {
-                    simulatedTyres = new Tyres(newTyres);
-                }
-                
-                totalTime += pitStop.getTimeDelay();
+                TyreType newTyres = selectOptimalTyre(track, weather, lap);
+                tyrePitStop = new PitStop(lap, true, newTyres, fuelToAdd, car.getAcceleration());
             }
-            
+
+            // If both are needed, combine into one pit stop (change tyres and refuel)
+            if (fuelPitStop != null && needsTyres) {
+                // Combine both actions into one pit stop
+                double fuelToAdd = car.getMaxFuelCapacity() - currentFuel;
+                TyreType newTyres = selectOptimalTyre(track, weather, lap);
+                PitStop combinedPitStop = new PitStop(lap, true, newTyres, fuelToAdd, car.getAcceleration());
+                strategy.addPitStop(combinedPitStop);
+                currentFuel = car.getMaxFuelCapacity();
+                simulatedTyres = new Tyres(newTyres);
+                totalTime += combinedPitStop.getTimeDelay();
+            } else if (fuelPitStop != null) {
+                strategy.addPitStop(fuelPitStop);
+                currentFuel = car.getMaxFuelCapacity();
+                totalTime += fuelPitStop.getTimeDelay();
+            } else if (needsTyres) {
+                strategy.addPitStop(tyrePitStop);
+                simulatedTyres = new Tyres(tyrePitStop.getNewTyreType());
+                totalTime += tyrePitStop.getTimeDelay();
+            }
+
             // Simulate lap
             currentFuel -= fuelPerLap;
             simulatedTyres.addWear(wearPerLap);
             totalTime += lapTime;
-            
+
             // Check for fuel emergency
             if (currentFuel < 0) {
                 strategy.setValid(false);
@@ -80,6 +91,13 @@ class StrategyOptimizer {
         double accelEffect = (acceleration - baseline) * accelEffectPerSec;
         lapTime *= (1.0 + accelEffect);
         
+        // New: Factor in cornering (higher cornering = faster lap)
+        double cornering = car.getCornering();
+        // Assume a reference cornering value (e.g., 10.0 is "excellent"), scale effect up to 10% faster for top cornering
+        double referenceCornering = 10.0;
+        double corneringEffect = Math.max(0.8, 1.0 - (cornering / referenceCornering) * 0.1); // up to 10% reduction
+        lapTime *= corneringEffect;
+        
         return lapTime;
     }
     
@@ -91,5 +109,30 @@ class StrategyOptimizer {
         } else {
             return TyreType.MEDIUM; // Balanced choice
         }
+    }
+    
+    /**
+     * Checks the fuel tank info and triggers a pit stop if fuel is below the threshold.
+     * @param car The RaceCar to check.
+     * @param currentLap The current lap number.
+     * @param track The Track (for fuel calculation).
+     * @param weather The WeatherCondition (for fuel calculation).
+     * @param fuelThreshold The threshold (0.0-1.0) below which a pit stop is triggered (default 0.2 for 20%).
+     * @return A PitStop if fuel is low, otherwise null.
+     */
+    public static PitStop checkAndTriggerPitStopForLowFuel(RaceCar car, int currentLap, Track track, WeatherCondition weather, double fuelThreshold) {
+        System.out.println(car.getFuelTankInfo());
+        double currentFuel = car.getCurrentFuel();
+        double maxFuel = car.getMaxFuelCapacity();
+        if (currentFuel <= maxFuel * fuelThreshold) {
+            double fuelToAdd = maxFuel - currentFuel;
+            // No tyre change, so pass false and null for tyres
+            return new PitStop(currentLap, false, null, fuelToAdd, car.getAcceleration());
+        }
+        return null;
+    }
+    // Overload with default threshold
+    public static PitStop checkAndTriggerPitStopForLowFuel(RaceCar car, int currentLap, Track track, WeatherCondition weather) {
+        return checkAndTriggerPitStopForLowFuel(car, currentLap, track, weather, 0.2);
     }
 }

@@ -217,6 +217,7 @@ public class RaceTeamManagement {
         System.out.printf("Fuel per Lap: %.2f L\n", car.getFuelConsumptionPerLap(track, weather));
         System.out.printf("Tyre Wear per Lap: %.2f%%\n", car.getTyreWearPerLap(track, weather));
         System.out.printf("Acceleration (0-100 km/h): %.2f s\n", car.getAcceleration());
+        System.out.printf("Cornering: %.2f\n", car.getCornering());
     }
     
     private void displayCars() {

@@ -86,6 +86,21 @@ class RaceCar {
         return engine.getEffectiveAcceleration();
     }
     
+    public String getFuelTankInfo() {
+        return String.format("Current Fuel: %.2f / %.2f (%.1f%%)", currentFuel, maxFuelCapacity, (currentFuel / maxFuelCapacity) * 100);
+    }
+    
+    // New: Get overall cornering ability (body kit + tyre type + tyre durability)
+    public double getCornering() {
+        int aeroCornering = aeroKit.getEffectiveCorneringAbility();
+        double tyreCornering = tyres.getType().getCorneringMultiplier();
+        // Factor in tyre wear: as wear increases, cornering decreases (up to 30% loss at 100% wear)
+        double wearPenalty = Math.max(0, 1 - (tyres.getCurrentWear() / 100.0) * 0.3);
+        // Optionally, factor in durabilityMultiplier (higher durability = less penalty)
+        double durabilityFactor = tyres.getType().durabilityMultiplier;
+        return aeroCornering * tyreCornering * wearPenalty * durabilityFactor;
+    }
+    
     // Getters
     public String getName() { return name; }
     public Engine getEngine() { return engine; }
