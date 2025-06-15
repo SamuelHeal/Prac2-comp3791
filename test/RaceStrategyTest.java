@@ -227,4 +227,34 @@ public class RaceStrategyTest {
         assertTrue("Has decent cornering",
                 cornering >= 5.0);
     }
+
+    @Test
+    @DisplayName("Pit stop time differences between fuel-only, tyres-only, and combined operations")
+    void testPitStopTimes() {
+        int testLap = 30;
+        double fuelAmount = 60.0;
+
+        PitStop fuelOnly = new PitStop(testLap, false, TyreType.MEDIUM, fuelAmount, 5.5);
+        PitStop tyresOnly = new PitStop(testLap, true, TyreType.SOFT, 0.0, 5.5);
+        PitStop fuelAndTyres = new PitStop(testLap, true, TyreType.SOFT, fuelAmount, 5.5);
+
+        assertEquals(testLap, fuelOnly.getLap());
+        assertEquals(fuelAmount, fuelOnly.getFuelAmount());
+        assertFalse(fuelOnly.isChangeTyres());
+
+        assertEquals(testLap, tyresOnly.getLap());
+        assertEquals(0.0, tyresOnly.getFuelAmount());
+        assertTrue(tyresOnly.isChangeTyres());
+
+        assertEquals(testLap, fuelAndTyres.getLap());
+        assertEquals(fuelAmount, fuelAndTyres.getFuelAmount());
+        assertTrue(fuelAndTyres.isChangeTyres());
+
+        assertTrue(fuelOnly.getTimeDelay() > 0);
+        assertTrue(tyresOnly.getTimeDelay() > 0);
+        assertTrue(fuelAndTyres.getTimeDelay() > 0);
+
+        assertTrue(fuelOnly.getTimeDelay() < fuelAndTyres.getTimeDelay());
+        assertTrue(tyresOnly.getTimeDelay() < fuelAndTyres.getTimeDelay());
+    }
 }

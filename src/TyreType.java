@@ -1,4 +1,4 @@
-enum TyreType {
+public enum TyreType {
     SOFT(1.2, 0.7, 25, 1.2),
     MEDIUM(1.0, 1.0, 40, 1.0),
     HARD(0.9, 1.3, 60, 0.9);

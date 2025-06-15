@@ -1,4 +1,4 @@
-enum EngineType {
+public enum EngineType {
     STANDARD(1.0, 1.0, 1.0, 6.0),
     TURBOCHARGED(1.3, 0.8, 1.4, 4.2),
     HYBRID(1.1, 1.2, 0.9, 5.0);

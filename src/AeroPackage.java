@@ -1,4 +1,4 @@
-enum AeroPackage {
+public enum AeroPackage {
     STANDARD_AERODYNAMICS(0.35, 150, 320, 12.0, 5, 
                          "Includes basic front and rear spoilers to reduce drag and provide minimal downforce. Suitable for general-purpose tracks; balances speed and stability without extreme effects."),
     
