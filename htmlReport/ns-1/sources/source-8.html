@@ -1,0 +1,407 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RaceTeamManagement</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: RaceTeamManagement (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RaceTeamManagement</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/14)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/57)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/165)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;import java.util.*;
+&nbsp;
+&nbsp;public class RaceTeamManagement {
+&nbsp;    private List&lt;RaceCar&gt; cars;
+&nbsp;    private List&lt;Track&gt; tracks;
+&nbsp;    private StrategyOptimizer optimizer;
+&nbsp;    private Scanner scanner;
+&nbsp;    
+<b class="nc">&nbsp;    public RaceTeamManagement() {</b>
+<b class="nc">&nbsp;        this.cars = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        this.tracks = initializeTracks();</b>
+<b class="nc">&nbsp;        this.optimizer = new StrategyOptimizer();</b>
+<b class="nc">&nbsp;        this.scanner = new Scanner(System.in);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private List&lt;Track&gt; initializeTracks() {
+<b class="nc">&nbsp;        List&lt;Track&gt; trackList = new ArrayList&lt;&gt;();</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Monaco Grand Prix&quot;, &quot;Street&quot;, 78, 3.337, 1.1, 1.3));</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Silverstone Circuit&quot;, &quot;Road&quot;, 52, 5.891, 1.0, 1.0));</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Monza Circuit&quot;, &quot;Road&quot;, 53, 5.793, 1.2, 0.8));</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Indianapolis 500&quot;, &quot;Oval&quot;, 200, 4.023, 1.3, 1.1));</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Nürburgring&quot;, &quot;Road&quot;, 67, 5.148, 1.1, 1.2));</b>
+<b class="nc">&nbsp;        trackList.add(new Track(&quot;Suzuka Circuit&quot;, &quot;Road&quot;, 53, 5.807, 1.0, 1.1));</b>
+<b class="nc">&nbsp;        return trackList;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void createCar() {
+<b class="nc">&nbsp;        System.out.print(&quot;Enter car name: &quot;);</b>
+<b class="nc">&nbsp;        String name = scanner.nextLine();</b>
+<b class="nc">&nbsp;        RaceCar car = new RaceCar(name);</b>
+<b class="nc">&nbsp;        cars.add(car);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Car &#39;&quot; + name + &quot;&#39; created successfully!&quot;);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void customizeCar() {
+<b class="nc">&nbsp;        if (cars.isEmpty()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;No cars available. Create a car first.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        displayCars();</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Select car index: &quot;);</b>
+<b class="nc">&nbsp;        int carIndex = scanner.nextInt();</b>
+<b class="nc">&nbsp;        scanner.nextLine(); // consume newline</b>
+&nbsp;        
+<b class="nc">&nbsp;        if (carIndex &lt; 0 || carIndex &gt;= cars.size()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid car selection.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        RaceCar car = cars.get(carIndex);</b>
+&nbsp;        
+<b class="nc">&nbsp;        System.out.println(&quot;\nCustomization Options:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;1. Engine&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;2. Tyres&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3. Aerodynamics&quot;);</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Choose component to customize: &quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        scanner.nextLine();</b>
+&nbsp;        
+<b class="nc">&nbsp;        switch (choice) {</b>
+&nbsp;            case 1:
+<b class="nc">&nbsp;                customizeEngine(car);</b>
+&nbsp;                break;
+&nbsp;            case 2:
+<b class="nc">&nbsp;                customizeTyres(car);</b>
+&nbsp;                break;
+&nbsp;            case 3:
+<b class="nc">&nbsp;                customizeAero(car);</b>
+&nbsp;                break;
+&nbsp;            default:
+<b class="nc">&nbsp;                System.out.println(&quot;Invalid choice.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void customizeEngine(RaceCar car) {
+<b class="nc">&nbsp;        System.out.println(&quot;\nEngine Options:&quot;);</b>
+<b class="nc">&nbsp;        EngineType[] engines = EngineType.values();</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; engines.length; i++) {</b>
+<b class="nc">&nbsp;            EngineType engine = engines[i];</b>
+<b class="nc">&nbsp;            System.out.printf(&quot;%d. %s (Speed: %.1fx, Fuel Eff: %.1fx, Accel: %.2f s 0-100km/h)\n&quot;,</b>
+<b class="nc">&nbsp;                i + 1,</b>
+<b class="nc">&nbsp;                engine.name(),</b>
+<b class="nc">&nbsp;                engine.speedMultiplier,</b>
+<b class="nc">&nbsp;                engine.fuelEfficiency,</b>
+<b class="nc">&nbsp;                engine.acceleration</b>
+&nbsp;            );
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.print(&quot;Select engine: &quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        if (choice &gt; 0 &amp;&amp; choice &lt;= engines.length) {</b>
+<b class="nc">&nbsp;            car.customizeEngine(engines[choice - 1]);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Engine updated to &quot; + engines[choice - 1]);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void customizeTyres(RaceCar car) {
+<b class="nc">&nbsp;        System.out.println(&quot;\nTyre Options:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;1. SOFT (Grip: 1.2x, Durability: 0.7x, Max Laps: 25)&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;2. MEDIUM (Grip: 1.0x, Durability: 1.0x, Max Laps: 40)&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3. HARD (Grip: 0.9x, Durability: 1.3x, Max Laps: 60)&quot;);</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Select tyres: &quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        TyreType[] tyres = TyreType.values();</b>
+<b class="nc">&nbsp;        if (choice &gt; 0 &amp;&amp; choice &lt;= tyres.length) {</b>
+<b class="nc">&nbsp;            car.customizeTyres(tyres[choice - 1]);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Tyres updated to &quot; + tyres[choice - 1]);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void customizeAero(RaceCar car) {
+<b class="nc">&nbsp;        System.out.println(&quot;\n=== AERODYNAMIC KIT OPTIONS ===&quot;);</b>
+<b class="nc">&nbsp;        AeroPackage[] aeros = AeroPackage.values();</b>
+&nbsp;        
+&nbsp;        // Table header
+<b class="nc">&nbsp;        System.out.println(&quot;┌─────┬─────────────────────────┬─────┬─────────┬─────────┬─────────┬───────────┐&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;│ No. │ Aerodynamic Kit        │ Cd  │ Down(kg)│ Top(kmh)│ Fuel(kml)│ Corner/10 │&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;├─────┼─────────────────────────┼─────┼─────────┼─────────┼─────────┼───────────┤&quot;);</b>
+&nbsp;        
+&nbsp;        // Table rows
+<b class="nc">&nbsp;        for (int i = 0; i &lt; aeros.length; i++) {</b>
+<b class="nc">&nbsp;            AeroPackage aero = aeros[i];</b>
+<b class="nc">&nbsp;            System.out.printf(&quot;│ %-3d │ %-23s │%.2f │ %7d │ %7d │ %7.1f │ %9d │%n&quot;, </b>
+<b class="nc">&nbsp;                             i + 1, aero.getDisplayName(), </b>
+<b class="nc">&nbsp;                             aero.dragCoefficient, aero.downforce, aero.topSpeed, </b>
+<b class="nc">&nbsp;                             aero.fuelEfficiency, aero.corneringAbility);</b>
+&nbsp;        }
+&nbsp;        
+&nbsp;        // Table footer
+<b class="nc">&nbsp;        System.out.println(&quot;└─────┴─────────────────────────┴─────┴─────────┴─────────┴─────────┴───────────┘&quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        System.out.print(&quot;\nSelect aerodynamic kit (1-&quot; + aeros.length + &quot;): &quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;        if (choice &gt; 0 &amp;&amp; choice &lt;= aeros.length) {</b>
+<b class="nc">&nbsp;            car.customizeAero(aeros[choice - 1]);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;\nAerodynamics updated to: &quot; + aeros[choice - 1].getDisplayName());</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid selection.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void optimizeStrategy() {
+<b class="nc">&nbsp;        if (cars.isEmpty()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;No cars available. Create a car first.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        displayCars();</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Select car index: &quot;);</b>
+<b class="nc">&nbsp;        int carIndex = scanner.nextInt();</b>
+&nbsp;        
+<b class="nc">&nbsp;        if (carIndex &lt; 0 || carIndex &gt;= cars.size()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid car selection.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        displayTracks();</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Select track index: &quot;);</b>
+<b class="nc">&nbsp;        int trackIndex = scanner.nextInt();</b>
+&nbsp;        
+<b class="nc">&nbsp;        if (trackIndex &lt; 0 || trackIndex &gt;= tracks.size()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid track selection.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        System.out.println(&quot;\nWeather Conditions:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;1. DRY&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;2. WET&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3. EXTREME_WET&quot;);</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Select weather: &quot;);</b>
+<b class="nc">&nbsp;        int weatherChoice = scanner.nextInt();</b>
+&nbsp;        
+<b class="nc">&nbsp;        WeatherCondition[] conditions = WeatherCondition.values();</b>
+<b class="nc">&nbsp;        if (weatherChoice &lt; 1 || weatherChoice &gt; conditions.length) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Invalid weather selection.&quot;);</b>
+&nbsp;            return;
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        RaceCar car = cars.get(carIndex);</b>
+<b class="nc">&nbsp;        Track track = tracks.get(trackIndex);</b>
+<b class="nc">&nbsp;        WeatherCondition weather = conditions[weatherChoice - 1];</b>
+&nbsp;        
+<b class="nc">&nbsp;        RaceStrategy strategy = optimizer.optimizeStrategy(car, track, weather);</b>
+<b class="nc">&nbsp;        displayStrategy(car, track, weather, strategy);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void displayStrategy(RaceCar car, Track track, WeatherCondition weather, RaceStrategy strategy) {
+<b class="nc">&nbsp;        System.out.println(&quot;\n=== RACE STRATEGY OPTIMIZATION ===&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Car: &quot; + car.getName());</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Track: &quot; + track.getName() + &quot; (&quot; + track.getTotalLaps() + &quot; laps)&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Weather: &quot; + weather);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Strategy Valid: &quot; + (strategy.isValid() ? &quot;YES&quot; : &quot;NO&quot;));</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Total Race Time: %.2f seconds (%.2f minutes)\n&quot;, </b>
+<b class="nc">&nbsp;                         strategy.getTotalTime(), strategy.getTotalTime() / 60);</b>
+&nbsp;        
+<b class="nc">&nbsp;        System.out.println(&quot;\nPit Stop Strategy:&quot;);</b>
+<b class="nc">&nbsp;        if (strategy.getPitStops().isEmpty()) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;No pit stops required!&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            for (int i = 0; i &lt; strategy.getPitStops().size(); i++) {</b>
+<b class="nc">&nbsp;                PitStop stop = strategy.getPitStops().get(i);</b>
+<b class="nc">&nbsp;                System.out.printf(&quot;Stop %d - Lap %d: &quot;, i + 1, stop.getLap());</b>
+<b class="nc">&nbsp;                if (stop.isChangeTyres()) {</b>
+<b class="nc">&nbsp;                    System.out.printf(&quot;Tyre change to %s, &quot;, stop.getNewTyreType());</b>
+&nbsp;                }
+<b class="nc">&nbsp;                System.out.printf(&quot;Fuel: %.1f L, Time: %.1f sec\n&quot;, </b>
+<b class="nc">&nbsp;                                 stop.getFuelAmount(), stop.getTimeDelay());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        System.out.printf(&quot;\nRace Performance Metrics:\n&quot;);</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Speed Rating: %.1f\n&quot;, car.getOverallSpeed(track, weather));</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Fuel per Lap: %.2f L\n&quot;, car.getFuelConsumptionPerLap(track, weather));</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Tyre Wear per Lap: %.2f%%\n&quot;, car.getTyreWearPerLap(track, weather));</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Acceleration (0-100 km/h): %.2f s\n&quot;, car.getAcceleration());</b>
+<b class="nc">&nbsp;        System.out.printf(&quot;Cornering: %.2f\n&quot;, car.getCornering());</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void displayCars() {
+<b class="nc">&nbsp;        System.out.println(&quot;\nAvailable Cars:&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; cars.size(); i++) {</b>
+<b class="nc">&nbsp;            RaceCar car = cars.get(i);</b>
+<b class="nc">&nbsp;            System.out.printf(&quot;%d. %s (Engine: %s, Tyres: %s, Aero: %s)\n&quot;, </b>
+<b class="nc">&nbsp;                             i, car.getName(), car.getEngine().getType(), </b>
+<b class="nc">&nbsp;                             car.getTyres().getType(), car.getAeroKit().getPackage().getDisplayName());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    private void displayTracks() {
+<b class="nc">&nbsp;        System.out.println(&quot;\nAvailable Tracks:&quot;);</b>
+<b class="nc">&nbsp;        for (int i = 0; i &lt; tracks.size(); i++) {</b>
+<b class="nc">&nbsp;            Track track = tracks.get(i);</b>
+<b class="nc">&nbsp;            System.out.printf(&quot;%d. %s (%s, %d laps, %.3f km)\n&quot;, </b>
+<b class="nc">&nbsp;                             i, track.getName(), track.getType(), </b>
+<b class="nc">&nbsp;                             track.getTotalLaps(), track.getLapLength());</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void displayMenu() {
+<b class="nc">&nbsp;        System.out.println(&quot;\n=== RACE TEAM MANAGEMENT SYSTEM ===&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;1. Create New Car&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;2. Customize Car&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3. Optimize Race Strategy&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;4. Display Cars&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;5. Display Tracks&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;6. Exit&quot;);</b>
+<b class="nc">&nbsp;        System.out.print(&quot;Choose option: &quot;);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void run() {
+<b class="nc">&nbsp;        System.out.println(&quot;Welcome to the Race Team Management System!&quot;);</b>
+&nbsp;        
+&nbsp;        while (true) {
+<b class="nc">&nbsp;            displayMenu();</b>
+<b class="nc">&nbsp;            int choice = scanner.nextInt();</b>
+<b class="nc">&nbsp;            scanner.nextLine(); // consume newline</b>
+&nbsp;            
+<b class="nc">&nbsp;            switch (choice) {</b>
+&nbsp;                case 1:
+<b class="nc">&nbsp;                    createCar();</b>
+&nbsp;                    break;
+&nbsp;                case 2:
+<b class="nc">&nbsp;                    customizeCar();</b>
+&nbsp;                    break;
+&nbsp;                case 3:
+<b class="nc">&nbsp;                    optimizeStrategy();</b>
+&nbsp;                    break;
+&nbsp;                case 4:
+<b class="nc">&nbsp;                    displayCars();</b>
+&nbsp;                    break;
+&nbsp;                case 5:
+<b class="nc">&nbsp;                    displayTracks();</b>
+&nbsp;                    break;
+&nbsp;                case 6:
+<b class="nc">&nbsp;                    System.out.println(&quot;Thank you for using the Race Team Management System!&quot;);</b>
+&nbsp;                    return;
+&nbsp;                default:
+<b class="nc">&nbsp;                    System.out.println(&quot;Invalid choice. Please try again.&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        RaceTeamManagement system = new RaceTeamManagement();</b>
+<b class="nc">&nbsp;        system.run();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-16 15:38</div>
+</div>
+</body>
+</html>

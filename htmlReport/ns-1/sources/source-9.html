@@ -1,0 +1,288 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > StrategyOptimizer</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: StrategyOptimizer (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">StrategyOptimizer</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.1%
+  </span>
+  <span class="absValue">
+    (20/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79.5%
+  </span>
+  <span class="absValue">
+    (58/73)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">StrategyOptimizer$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    74.1%
+  </span>
+  <span class="absValue">
+    (20/27)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    79.7%
+  </span>
+  <span class="absValue">
+    (59/74)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Strategy Optimizer
+<b class="fc">&nbsp;class StrategyOptimizer {</b>
+&nbsp;    
+&nbsp;    public RaceStrategy optimizeStrategy(RaceCar car, Track track, WeatherCondition weather) {
+<b class="fc">&nbsp;        RaceStrategy strategy = new RaceStrategy();</b>
+&nbsp;        
+&nbsp;        // Simulate race to determine optimal pit stops
+<b class="fc">&nbsp;        double currentFuel = car.getCurrentFuel();</b>
+<b class="fc">&nbsp;        Tyres simulatedTyres = new Tyres(car.getTyres().getType());</b>
+<b class="fc">&nbsp;        double totalTime = 0.0;</b>
+&nbsp;        
+<b class="fc">&nbsp;        double fuelPerLap = car.getFuelConsumptionPerLap(track, weather);</b>
+<b class="fc">&nbsp;        double wearPerLap = car.getTyreWearPerLap(track, weather);</b>
+<b class="fc">&nbsp;        double lapTime = calculateLapTime(car, track, weather);</b>
+&nbsp;        
+&nbsp;        // Start-of-race acceleration bonus
+<b class="fc">&nbsp;        double accel = car.getAcceleration();</b>
+<b class="fc">&nbsp;        double startBonus = Math.max(0, (6.0 - accel) * 0.5); // 0.5s per 0.1s below 6.0s</b>
+<b class="fc">&nbsp;        startBonus = Math.min(startBonus, 1.0); // cap at 1.0s</b>
+<b class="fc">&nbsp;        totalTime -= startBonus;</b>
+&nbsp;        
+<b class="fc">&nbsp;        for (int lap = 1; lap &lt;= track.getTotalLaps(); lap++) {</b>
+&nbsp;            // Use the new function to check for low fuel and trigger pit stop
+<b class="fc">&nbsp;            PitStop fuelPitStop = checkAndTriggerPitStopForLowFuel(car, lap, track, weather);</b>
+<b class="fc">&nbsp;            boolean needsTyres = simulatedTyres.getCurrentWear() &gt; 80.0;</b>
+<b class="fc">&nbsp;            PitStop tyrePitStop = null;</b>
+<b class="fc">&nbsp;            if (needsTyres) {</b>
+<b class="fc">&nbsp;                double fuelToAdd = car.getMaxFuelCapacity() - currentFuel;</b>
+<b class="fc">&nbsp;                TyreType newTyres = selectOptimalTyre(track, weather, lap);</b>
+<b class="fc">&nbsp;                tyrePitStop = new PitStop(lap, true, newTyres, fuelToAdd, car.getAcceleration());</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // If both are needed, combine into one pit stop (change tyres and refuel)
+<b class="pc">&nbsp;            if (fuelPitStop != null &amp;&amp; needsTyres) {</b>
+&nbsp;                // Combine both actions into one pit stop
+<b class="nc">&nbsp;                double fuelToAdd = car.getMaxFuelCapacity() - currentFuel;</b>
+<b class="nc">&nbsp;                TyreType newTyres = selectOptimalTyre(track, weather, lap);</b>
+<b class="nc">&nbsp;                PitStop combinedPitStop = new PitStop(lap, true, newTyres, fuelToAdd, car.getAcceleration());</b>
+<b class="nc">&nbsp;                strategy.addPitStop(combinedPitStop);</b>
+<b class="nc">&nbsp;                currentFuel = car.getMaxFuelCapacity();</b>
+<b class="nc">&nbsp;                simulatedTyres = new Tyres(newTyres);</b>
+<b class="nc">&nbsp;                totalTime += combinedPitStop.getTimeDelay();</b>
+<b class="pc">&nbsp;            } else if (fuelPitStop != null) {</b>
+<b class="nc">&nbsp;                strategy.addPitStop(fuelPitStop);</b>
+<b class="nc">&nbsp;                currentFuel = car.getMaxFuelCapacity();</b>
+<b class="nc">&nbsp;                totalTime += fuelPitStop.getTimeDelay();</b>
+<b class="fc">&nbsp;            } else if (needsTyres) {</b>
+<b class="fc">&nbsp;                strategy.addPitStop(tyrePitStop);</b>
+<b class="fc">&nbsp;                simulatedTyres = new Tyres(tyrePitStop.getNewTyreType());</b>
+<b class="fc">&nbsp;                totalTime += tyrePitStop.getTimeDelay();</b>
+&nbsp;            }
+&nbsp;
+&nbsp;            // Simulate lap
+<b class="fc">&nbsp;            currentFuel -= fuelPerLap;</b>
+<b class="fc">&nbsp;            simulatedTyres.addWear(wearPerLap);</b>
+<b class="fc">&nbsp;            totalTime += lapTime;</b>
+&nbsp;
+&nbsp;            // Check for fuel emergency
+<b class="pc">&nbsp;            if (currentFuel &lt; 0) {</b>
+<b class="nc">&nbsp;                strategy.setValid(false);</b>
+&nbsp;                break;
+&nbsp;            }
+&nbsp;        }
+&nbsp;        
+<b class="fc">&nbsp;        strategy.setTotalTime(totalTime);</b>
+<b class="fc">&nbsp;        return strategy;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private double calculateLapTime(RaceCar car, Track track, WeatherCondition weather) {
+<b class="fc">&nbsp;        double baseTime = 90.0; // 90 seconds base lap time</b>
+<b class="fc">&nbsp;        double speed = car.getOverallSpeed(track, weather);</b>
+<b class="fc">&nbsp;        double lapTime = baseTime * (100.0 / speed);</b>
+&nbsp;        
+&nbsp;        // Factor in acceleration (lower is better), effect depends on weather
+<b class="fc">&nbsp;        double acceleration = car.getAcceleration(); // 0-100 km/h time in seconds</b>
+<b class="fc">&nbsp;        double baseline = 4.0; // F1-level acceleration</b>
+&nbsp;        double accelEffectPerSec;
+<b class="pc">&nbsp;        switch (weather) {</b>
+&nbsp;            case DRY:
+<b class="fc">&nbsp;                accelEffectPerSec = 0.02; // 2% per second</b>
+&nbsp;                break;
+&nbsp;            case WET:
+<b class="fc">&nbsp;                accelEffectPerSec = 0.03; // 3% per second</b>
+&nbsp;                break;
+&nbsp;            case EXTREME_WET:
+<b class="fc">&nbsp;                accelEffectPerSec = 0.04; // 4% per second</b>
+&nbsp;                break;
+&nbsp;            default:
+<b class="nc">&nbsp;                accelEffectPerSec = 0.02;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        double accelEffect = (acceleration - baseline) * accelEffectPerSec;</b>
+<b class="fc">&nbsp;        lapTime *= (1.0 + accelEffect);</b>
+&nbsp;        
+&nbsp;        // New: Factor in cornering (higher cornering = faster lap)
+<b class="fc">&nbsp;        double cornering = car.getCornering();</b>
+&nbsp;        // Assume a reference cornering value (e.g., 10.0 is &quot;excellent&quot;), scale effect up to 10% faster for top cornering
+<b class="fc">&nbsp;        double referenceCornering = 10.0;</b>
+<b class="fc">&nbsp;        double corneringEffect = Math.max(0.8, 1.0 - (cornering / referenceCornering) * 0.1); // up to 10% reduction</b>
+<b class="fc">&nbsp;        lapTime *= corneringEffect;</b>
+&nbsp;        
+<b class="fc">&nbsp;        return lapTime;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private TyreType selectOptimalTyre(Track track, WeatherCondition weather, int currentLap) {
+<b class="fc">&nbsp;        if (weather == WeatherCondition.WET || weather == WeatherCondition.EXTREME_WET) {</b>
+<b class="fc">&nbsp;            return TyreType.SOFT; // Better grip in wet conditions</b>
+<b class="pc">&nbsp;        } else if (track.getType().equals(&quot;Oval&quot;)) {</b>
+<b class="nc">&nbsp;            return TyreType.HARD; // Better for high-speed circuits</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            return TyreType.MEDIUM; // Balanced choice</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Checks the fuel tank info and triggers a pit stop if fuel is below the threshold.
+&nbsp;     * @param car The RaceCar to check.
+&nbsp;     * @param currentLap The current lap number.
+&nbsp;     * @param track The Track (for fuel calculation).
+&nbsp;     * @param weather The WeatherCondition (for fuel calculation).
+&nbsp;     * @param fuelThreshold The threshold (0.0-1.0) below which a pit stop is triggered (default 0.2 for 20%).
+&nbsp;     * @return A PitStop if fuel is low, otherwise null.
+&nbsp;     */
+&nbsp;    public static PitStop checkAndTriggerPitStopForLowFuel(RaceCar car, int currentLap, Track track, WeatherCondition weather, double fuelThreshold) {
+<b class="fc">&nbsp;        System.out.println(car.getFuelTankInfo());</b>
+<b class="fc">&nbsp;        double currentFuel = car.getCurrentFuel();</b>
+<b class="fc">&nbsp;        double maxFuel = car.getMaxFuelCapacity();</b>
+<b class="pc">&nbsp;        if (currentFuel &lt;= maxFuel * fuelThreshold) {</b>
+<b class="nc">&nbsp;            double fuelToAdd = maxFuel - currentFuel;</b>
+&nbsp;            // No tyre change, so pass false and null for tyres
+<b class="nc">&nbsp;            return new PitStop(currentLap, false, null, fuelToAdd, car.getAcceleration());</b>
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;    // Overload with default threshold
+&nbsp;    public static PitStop checkAndTriggerPitStopForLowFuel(RaceCar car, int currentLap, Track track, WeatherCondition weather) {
+<b class="fc">&nbsp;        return checkAndTriggerPitStopForLowFuel(car, currentLap, track, weather, 0.2);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-16 15:38</div>
+</div>
+</body>
+</html>

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CarConfigTest {
@@ -101,13 +100,15 @@ public class CarConfigTest {
         assertEquals(maxLaps, type.maxLaps);
     }
 
+    
+
     @ParameterizedTest
     @CsvSource({
         "EXTREME_DOWNFORCE, LOW_DRAG_PACKAGE",
         "DOWNFORCE_FOCUSED, DRS_SYSTEM",
         "WET_WEATHER_PACKAGE, LOW_DRAG_PACKAGE"
     })
-    @DisplayName("Conflicting aero packages show performance trade-offs")
+    @DisplayName("Aero packages show performance trade-offs")
     void testAeroConflicts(AeroPackage highDownforce, AeroPackage lowDrag) {
         testCar.customizeAero(highDownforce);
         int highDownforceCornering = testCar.getAeroKit().getPackage().corneringAbility;
@@ -122,53 +123,66 @@ public class CarConfigTest {
     }
     
     @Test
-    @DisplayName("Refuel constraints")
-    void testRefuelConstraints() {
-        double maxCapacity = testCar.getMaxFuelCapacity();
+    @DisplayName("Engine upgrades improve performance")
+    void testEngineUpgrades() {
+        Engine engine = new Engine(EngineType.STANDARD);
         
-        testCar.refuel(200.0);
-        assertEquals(maxCapacity, testCar.getCurrentFuel());
+        double initialSpeed = engine.getSpeedMultiplier();
+        double initialFuelEff = engine.getFuelEfficiency();
+        double initialAcceleration = engine.getEffectiveAcceleration();
         
-        testCar.consumeFuel(50.0);
-        assertEquals(maxCapacity - 50.0, testCar.getCurrentFuel());
+        engine.upgrade();
         
-        testCar.consumeFuel(200.0);
-        assertEquals(0.0, testCar.getCurrentFuel());
+        assertTrue(engine.getSpeedMultiplier() > initialSpeed);
+        assertTrue(engine.getFuelEfficiency() > initialFuelEff);
+        assertTrue(engine.getEffectiveAcceleration() < initialAcceleration);
     }
     
-    @ParameterizedTest
-    @CsvSource({
-        "HYBRID, LOW_DRAG_PACKAGE, <fuel",
-        "TURBOCHARGED, EXTREME_DOWNFORCE, >fuel",
-        "STANDARD, STANDARD_AERODYNAMICS, =fuel"
-    })
-    @DisplayName("Engine and aero combinations affect fuel consumption")
-    void testEngineAeroFuelConsumption(EngineType engine, AeroPackage aero, String fuelComparison) {
-        Track testTrack = new Track("Test Track", "Road", 50, 4.0, 1.0, 1.0);
+    @Test
+    @DisplayName("Aero upgrades improve performance")
+    void testAeroUpgrades() {
+        AerodynamicKit aero = new AerodynamicKit(AeroPackage.STANDARD_AERODYNAMICS);
         
-        testCar.customizeEngine(engine);
-        testCar.customizeAero(aero);
+        double initialDrag = aero.getEffectiveDragCoefficient();
+        int initialDownforce = aero.getEffectiveDownforce();
+        int initialTopSpeed = aero.getEffectiveTopSpeed();
+        double initialFuelEff = aero.getEffectiveFuelEfficiency();
+        int initialCornering = aero.getEffectiveCorneringAbility();
         
-        double fuelConsumption = testCar.getFuelConsumptionPerLap(testTrack, WeatherCondition.DRY);
-        assertTrue(fuelConsumption > 0);
+        aero.upgrade();
         
-        // Compare different engine/aero combinations using data-driven approach
-        RaceCar standardCar = new RaceCar("Standard Comparison");
-        double standardConsumption = standardCar.getFuelConsumptionPerLap(testTrack, WeatherCondition.DRY);
-
-        switch (fuelComparison) {
-            case ">fuel":
-                assertTrue(fuelConsumption >= standardConsumption);
-                break;
-            case "<fuel":
-                assertTrue(fuelConsumption <= standardConsumption);
-                break;
-            case "=fuel":
-                assertEquals(fuelConsumption, standardConsumption);
-                break;
-            default:
-                fail();
-        }
+        assertTrue(aero.getEffectiveDragCoefficient() < initialDrag);
+        assertTrue(aero.getEffectiveDownforce() > initialDownforce);
+        assertTrue(aero.getEffectiveTopSpeed() > initialTopSpeed);
+        assertTrue(aero.getEffectiveFuelEfficiency() > initialFuelEff);
+        assertTrue(aero.getEffectiveCorneringAbility() >= initialCornering);
+    }
+    
+    @Test
+    @DisplayName("Multiple upgrades show progressive improvement")
+    void testProgressiveUpgrades() {
+        Engine engine = new Engine(EngineType.STANDARD);
+        AerodynamicKit aero = new AerodynamicKit(AeroPackage.STANDARD_AERODYNAMICS);
+        
+        double speed1 = engine.getSpeedMultiplier();
+        double drag1 = aero.getEffectiveDragCoefficient();
+        
+        engine.upgrade();
+        aero.upgrade();
+        
+        double speed2 = engine.getSpeedMultiplier();
+        double drag2 = aero.getEffectiveDragCoefficient();
+        
+        engine.upgrade();
+        aero.upgrade();
+        
+        double speed3 = engine.getSpeedMultiplier();
+        double drag3 = aero.getEffectiveDragCoefficient();
+        
+        assertTrue(speed1 < speed2);
+        assertTrue(speed2 < speed3);
+        assertTrue(drag1 > drag2);
+        assertTrue(drag2 > drag3);
     }
 }
 

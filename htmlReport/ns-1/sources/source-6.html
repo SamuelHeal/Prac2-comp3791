@@ -1,0 +1,227 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > RaceCar</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: RaceCar (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RaceCar</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    72.2%
+  </span>
+  <span class="absValue">
+    (13/18)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.9%
+  </span>
+  <span class="absValue">
+    (40/45)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Race Car Class
+&nbsp;class RaceCar {
+&nbsp;    private String name;
+&nbsp;    private Engine engine;
+&nbsp;    private Tyres tyres;
+&nbsp;    private AerodynamicKit aeroKit;
+&nbsp;    private double currentFuel;
+&nbsp;    private double maxFuelCapacity;
+&nbsp;    
+<b class="fc">&nbsp;    public RaceCar(String name) {</b>
+<b class="fc">&nbsp;        this.name = name;</b>
+<b class="fc">&nbsp;        this.engine = new Engine(EngineType.STANDARD);</b>
+<b class="fc">&nbsp;        this.tyres = new Tyres(TyreType.MEDIUM);</b>
+<b class="fc">&nbsp;        this.aeroKit = new AerodynamicKit(AeroPackage.STANDARD_AERODYNAMICS);</b>
+<b class="fc">&nbsp;        this.maxFuelCapacity = 100.0;</b>
+<b class="fc">&nbsp;        this.currentFuel = maxFuelCapacity;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void customizeEngine(EngineType type) {
+<b class="fc">&nbsp;        this.engine = new Engine(type);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void customizeTyres(TyreType type) {
+<b class="fc">&nbsp;        this.tyres = new Tyres(type);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void customizeAero(AeroPackage aero) {
+<b class="fc">&nbsp;        this.aeroKit = new AerodynamicKit(aero);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void refuel(double amount) {
+<b class="nc">&nbsp;        currentFuel = Math.min(maxFuelCapacity, currentFuel + amount);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public void consumeFuel(double amount) {
+<b class="nc">&nbsp;        currentFuel = Math.max(0, currentFuel - amount);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public double getOverallSpeed(Track track, WeatherCondition weather) {
+&nbsp;        // Base speed calculation using aerodynamic top speed and engine multipliers
+<b class="fc">&nbsp;        double baseSpeed = aeroKit.getPackage().topSpeed;</b>
+<b class="fc">&nbsp;        double engineSpeed = baseSpeed * engine.getSpeedMultiplier();</b>
+<b class="fc">&nbsp;        double tyreSpeed = engineSpeed * tyres.getGripMultiplier();</b>
+&nbsp;        
+&nbsp;        // Adjust for track type - downforce helps on technical tracks
+<b class="fc">&nbsp;        if (track.getType().equals(&quot;Street&quot;)) {</b>
+<b class="fc">&nbsp;            double downforceBonus = Math.min(0.2, aeroKit.getPackage().downforce / 2000.0);</b>
+<b class="fc">&nbsp;            tyreSpeed *= (1.0 + downforceBonus);</b>
+&nbsp;        }
+&nbsp;        
+<b class="fc">&nbsp;        return tyreSpeed * weather.speedReduction;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public double getFuelConsumptionPerLap(Track track, WeatherCondition weather) {
+&nbsp;        // Base fuel consumption calculation using aerodynamic efficiency
+<b class="fc">&nbsp;        double baseFuelPerKm = 1.0 / aeroKit.getPackage().fuelEfficiency;</b>
+<b class="fc">&nbsp;        double lapConsumption = baseFuelPerKm * track.getLapLength();</b>
+&nbsp;        
+&nbsp;        // Engine efficiency affects consumption
+<b class="fc">&nbsp;        double engineConsumption = lapConsumption / engine.getFuelEfficiency();</b>
+&nbsp;        
+&nbsp;        // Drag coefficient affects fuel consumption
+<b class="fc">&nbsp;        double dragPenalty = 1.0 + (aeroKit.getPackage().dragCoefficient - 0.3) * 0.5;</b>
+<b class="fc">&nbsp;        double aeroConsumption = engineConsumption * dragPenalty;</b>
+&nbsp;        
+&nbsp;        // Track and weather effects
+<b class="fc">&nbsp;        double trackConsumption = aeroConsumption * track.getFuelMultiplier();</b>
+&nbsp;        
+<b class="fc">&nbsp;        return trackConsumption * weather.fuelConsumptionIncrease;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public double getTyreWearPerLap(Track track, WeatherCondition weather) {
+<b class="fc">&nbsp;        double baseWear = 2.0;</b>
+<b class="fc">&nbsp;        double trackWear = baseWear * track.getTyreWearMultiplier();</b>
+<b class="fc">&nbsp;        double tyreWear = trackWear / tyres.getType().durabilityMultiplier;</b>
+&nbsp;        
+&nbsp;        // High downforce increases tyre wear due to increased grip forces
+<b class="fc">&nbsp;        double downforceWear = 1.0 + (aeroKit.getPackage().downforce / 1000.0) * 0.1;</b>
+<b class="fc">&nbsp;        tyreWear *= downforceWear;</b>
+&nbsp;        
+<b class="fc">&nbsp;        return tyreWear * weather.tyreWearIncrease;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public double getAcceleration() {
+&nbsp;        // In the future, could factor in tyres and aero
+<b class="fc">&nbsp;        return engine.getEffectiveAcceleration();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    public String getFuelTankInfo() {
+<b class="fc">&nbsp;        return String.format(&quot;Current Fuel: %.2f / %.2f (%.1f%%)&quot;, currentFuel, maxFuelCapacity, (currentFuel / maxFuelCapacity) * 100);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    // New: Get overall cornering ability (body kit + tyre type + tyre durability)
+&nbsp;    public double getCornering() {
+<b class="fc">&nbsp;        int aeroCornering = aeroKit.getEffectiveCorneringAbility();</b>
+<b class="fc">&nbsp;        double tyreCornering = tyres.getType().getCorneringMultiplier();</b>
+&nbsp;        // Factor in tyre wear: as wear increases, cornering decreases (up to 30% loss at 100% wear)
+<b class="fc">&nbsp;        double wearPenalty = Math.max(0, 1 - (tyres.getCurrentWear() / 100.0) * 0.3);</b>
+&nbsp;        // Optionally, factor in durabilityMultiplier (higher durability = less penalty)
+<b class="fc">&nbsp;        double durabilityFactor = tyres.getType().durabilityMultiplier;</b>
+<b class="fc">&nbsp;        return aeroCornering * tyreCornering * wearPenalty * durabilityFactor;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    // Getters
+<b class="nc">&nbsp;    public String getName() { return name; }</b>
+<b class="nc">&nbsp;    public Engine getEngine() { return engine; }</b>
+<b class="fc">&nbsp;    public Tyres getTyres() { return tyres; }</b>
+<b class="nc">&nbsp;    public AerodynamicKit getAeroKit() { return aeroKit; }</b>
+<b class="fc">&nbsp;    public double getCurrentFuel() { return currentFuel; }</b>
+<b class="fc">&nbsp;    public double getMaxFuelCapacity() { return maxFuelCapacity; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-16 15:38</div>
+</div>
+</body>
+</html>

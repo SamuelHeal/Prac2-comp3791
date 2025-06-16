@@ -1,0 +1,151 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PitStop</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">&lt;empty package name&gt;</a>
+</div>
+
+<h1>Coverage Summary for Class: PitStop (&lt;empty package name&gt;)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PitStop</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    71.4%
+  </span>
+  <span class="absValue">
+    (5/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    89.5%
+  </span>
+  <span class="absValue">
+    (17/19)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;// Pit Stop Strategy Classes
+&nbsp;class PitStop {
+&nbsp;    private int lap;
+&nbsp;    private boolean changeTyres;
+&nbsp;    private TyreType newTyreType;
+&nbsp;    private double fuelAmount;
+&nbsp;    private double timeDelay;
+&nbsp;    private double acceleration;
+&nbsp;    
+<b class="fc">&nbsp;    public PitStop(int lap, boolean changeTyres, TyreType newTyres, double fuel, double acceleration) {</b>
+<b class="fc">&nbsp;        this.lap = lap;</b>
+<b class="fc">&nbsp;        this.changeTyres = changeTyres;</b>
+<b class="fc">&nbsp;        this.newTyreType = newTyres;</b>
+<b class="fc">&nbsp;        this.fuelAmount = fuel;</b>
+<b class="fc">&nbsp;        this.acceleration = acceleration;</b>
+<b class="fc">&nbsp;        this.timeDelay = calculateDelay();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    private double calculateDelay() {
+<b class="fc">&nbsp;        double baseTime = 20.0; // 20 seconds base</b>
+<b class="pc">&nbsp;        if (changeTyres) baseTime += 15.0;</b>
+<b class="fc">&nbsp;        baseTime += fuelAmount * 0.5; // 0.5 seconds per liter</b>
+&nbsp;        // Acceleration effect: for every 0.1s below 6.0s, reduce by 0.5% (max 10%)
+<b class="fc">&nbsp;        double accelBonus = Math.max(0, (6.0 - acceleration) * 0.5); // 0.5% per 0.1s</b>
+<b class="fc">&nbsp;        accelBonus = Math.min(accelBonus, 10.0); // cap at 10%</b>
+<b class="fc">&nbsp;        baseTime *= (1.0 - accelBonus / 100.0);</b>
+<b class="fc">&nbsp;        return baseTime;</b>
+&nbsp;    }
+&nbsp;    
+<b class="fc">&nbsp;    public int getLap() { return lap; }</b>
+<b class="nc">&nbsp;    public boolean isChangeTyres() { return changeTyres; }</b>
+<b class="fc">&nbsp;    public TyreType getNewTyreType() { return newTyreType; }</b>
+<b class="nc">&nbsp;    public double getFuelAmount() { return fuelAmount; }</b>
+<b class="fc">&nbsp;    public double getTimeDelay() { return timeDelay; }</b>
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-06-16 15:38</div>
+</div>
+</body>
+</html>

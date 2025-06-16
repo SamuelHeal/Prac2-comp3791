@@ -30,8 +30,8 @@ public class RaceConditionsTest {
 
     @ParameterizedTest
     @EnumSource(WeatherCondition.class)
-    @DisplayName("Weather conditions affect race strategy outcomes")
-    void testWeather(WeatherCondition weather) {
+    @DisplayName("Weather conditions affect race times")
+    void testTimeWithWeather(WeatherCondition weather) {
         Track testTrack = new Track("Test Track", "Road", 50, 4.0, 1.0, 1.0);
 
         RaceStrategy strategy = optimizer.optimizeStrategy(standardCar, testTrack, weather);
@@ -48,9 +48,29 @@ public class RaceConditionsTest {
         }
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "50, 50, 50, 1, 2, 3",
+            "50, 60, 70, 1, 1, 1",
+    })
+    @DisplayName("Longer tracks/more laps take more time")
+    void testTimeWithLapsAndLength(int lap1, int lap2, int lap3, int len1, int len2, int len3) {
+        Track testTrack = new Track("Test Track", "Road", lap1, len1, 1.0, 1.0);
+        Track testTrack2 = new Track("Test Track", "Road", lap2, len2, 1.0, 1.0);
+        Track testTrack3 = new Track("Test Track", "Road", lap3, len3, 1.0, 1.0);
+
+        RaceStrategy strategy = optimizer.optimizeStrategy(standardCar, testTrack, WeatherCondition.DRY);
+        RaceStrategy strategy2 = optimizer.optimizeStrategy(standardCar, testTrack2, WeatherCondition.DRY);
+        RaceStrategy strategy3 = optimizer.optimizeStrategy(standardCar, testTrack3, WeatherCondition.DRY);
+
+        assertTrue(strategy.getTotalTime() < strategy2.getTotalTime()
+                && strategy2.getTotalTime() < strategy3.getTotalTime());
+    }
+
+
     @Test
-    @DisplayName("Race length affects strategy outcomes")
-    void testLength() {
+    @DisplayName("Race length affects pit stops")
+    void testPitWithLength() {
 
         Track baselineTrack = new Track("Baseline Race", "Road", 50, 4.0, 1.0, 1.0);
         RaceStrategy baselineStrategy = optimizer.optimizeStrategy(standardCar, baselineTrack, WeatherCondition.DRY);
@@ -73,9 +93,9 @@ public class RaceConditionsTest {
             "Road, 40, 3.0, DRY",
             "Street, 45, 4.5, WET"
     })
-    @DisplayName("Strategy validity across different race conditions")
-    void testStratValidity(String trackType, int laps, double length, WeatherCondition weather) {
-        Track testTrack = new Track("Validity Test", trackType, laps, length, 1.0, 1.0);
+    @DisplayName("Weather affects pit stops")
+    void testPitWithWeather(String trackType, int laps, double length, WeatherCondition weather) {
+        Track testTrack = new Track("Test Track", trackType, laps, length, 1.0, 1.0);
 
         RaceStrategy strategy = optimizer.optimizeStrategy(standardCar, testTrack, weather);
 
@@ -84,20 +104,5 @@ public class RaceConditionsTest {
             assertTrue(pitStop.getLap() < laps);
             assertTrue(pitStop.getTimeDelay() > 0);
         }
-    }
-
-    @Test
-    @DisplayName("Longer tracks take more time")
-    void testTrackDifficulty() {
-        Track testTrack = new Track("Test Track", "Road", 50, 1, 1.0, 1.0);
-        Track testTrack2 = new Track("Test Track", "Road", 50, 2, 1.0, 1.0);
-        Track testTrack3 = new Track("Test Track", "Road", 50, 3, 1.0, 1.0);
-
-        RaceStrategy strategy = optimizer.optimizeStrategy(standardCar, testTrack, WeatherCondition.DRY);
-        RaceStrategy strategy2 = optimizer.optimizeStrategy(standardCar, testTrack2, WeatherCondition.DRY);
-        RaceStrategy strategy3 = optimizer.optimizeStrategy(standardCar, testTrack3, WeatherCondition.DRY);
-
-        assertTrue(strategy.getTotalTime() < strategy2.getTotalTime()
-                && strategy2.getTotalTime() < strategy3.getTotalTime());
     }
 } 
