@@ -1,15 +1,18 @@
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+//import org.junit.Before;
+//import org.junit.Test;
+//import static org.junit.Assert.*;
+//import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Nested;
-//import org.junit.jupiter.api.Test;
-//
-//import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class RaceStrategyTest {
    private RaceTeamManagement teamManagement;
@@ -19,7 +22,7 @@ public class RaceStrategyTest {
    private Track ovalTrack;
    private StrategyOptimizer optimizer;
 
-   @Before
+   @BeforeEach
    public void setUp() {
        teamManagement = new RaceTeamManagement();
        optimizer = new StrategyOptimizer();
@@ -33,6 +36,7 @@ public class RaceStrategyTest {
        ovalTrack = new Track("WeirdCircle", "Oval", 200, 4.023, 1.3, 1.1);
    }
 
+   @DisplayName("Test Strategy in dry weather")
    @Test
    public void testDryWeather() {
        //Dry weather strategy with different car configurations
@@ -42,11 +46,12 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, streetTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
-       assertTrue("Uses pit stops", strategy.getPitStops().size() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
+       assertTrue(strategy.getPitStops().size() > 0);
    }
 
+   @DisplayName("Test strategy in wet weather")
    @Test
    public void testWetWeather() {
        //Wet weather strategy
@@ -56,19 +61,20 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.WET);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        //Check if strategy accounts for wet conditions
        List<PitStop> pitStops = strategy.getPitStops();
        for (PitStop stop : pitStops) {
            if (stop.isChangeTyres()) {
-               assertEquals("Uses soft tyres in wet conditions",
+               assertEquals(
                        TyreType.SOFT, stop.getNewTyreType());
            }
        }
    }
 
+   @DisplayName("Test speed on the track")
    @Test
    public void testSpeedTrack() {
        //Speed track strategy
@@ -78,19 +84,20 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, ovalTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        //Check if strategy accounts for oval track characteristics
        List<PitStop> pitStops = strategy.getPitStops();
        for (PitStop stop : pitStops) {
            if (stop.isChangeTyres()) {
-               assertEquals("Uses hard tyres on oval track",
+               assertEquals(
                        TyreType.HARD, stop.getNewTyreType());
            }
        }
    }
 
+   @DisplayName("Test Extremely wet weather")
    @Test
    public void testExtremeWet() {
        //Extreme wet weather strategy
@@ -100,14 +107,15 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, streetTrack, WeatherCondition.EXTREME_WET);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        double expectedTimeMultiplier = 1.2; //Expected increase in time in extreme weather
-       assertTrue("Higher time in extreme weather",
+       assertTrue(
                strategy.getTotalTime() > streetTrack.getTotalLaps() * 90 * expectedTimeMultiplier);
    }
 
+   @DisplayName("Test Fuel efficiency")
    @Test
    public void testFuelEfficiency() {
        //Fuel efficient strategy
@@ -117,15 +125,16 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        //Check for less pit stops due to better fuel efficiency
        List<PitStop> pitStops = strategy.getPitStops();
-       assertTrue("Fewer pit stops",
+       assertTrue(
                pitStops.size() <= 2);
    }
 
+   @DisplayName("Test consistent strategy")
    @Test
    public void testStrategyConsistency() {
        //strategy consistency across multiple runs
@@ -137,12 +146,13 @@ public class RaceStrategyTest {
        RaceStrategy strategy2 = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
        //Check consistent results
-       assertEquals("Strategies should be consistent",
+       assertEquals(
                strategy1.getTotalTime(), strategy2.getTotalTime(), 0.1);
-       assertEquals("Pit stop count should be consistent",
+       assertEquals(
                strategy1.getPitStops().size(), strategy2.getPitStops().size());
    }
 
+   @DisplayName("Test invalid conditions")
    @Test
    public void testInvalid() {
        //Invalid strategy
@@ -154,9 +164,10 @@ public class RaceStrategyTest {
        Track highConsumptionTrack = new Track("Test Track", "Road", 100, 5.0, 2.0, 2.0);
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, highConsumptionTrack, WeatherCondition.DRY);
 
-       assertFalse("Strategy should be invalid with insufficient fuel", strategy.isValid());
+       assertFalse(strategy.isValid());
    }
 
+   @DisplayName("Test for Mixed track conditions")
    @Test
    public void testAdjustable() {
        //Strategy with Adjustable aerodynamics
@@ -166,16 +177,17 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        // Verify strategy accounts for mixed track conditions
        double expectedTime = roadTrack.getTotalLaps() * 90; // Base time
-       assertTrue("Reasonable Time",
+       assertTrue(
                strategy.getTotalTime() > expectedTime * 0.8 &&
                        strategy.getTotalTime() < expectedTime * 1.2);
    }
 
+   @DisplayName("Test ground effect")
    @Test
    public void testGroundEffect() {
        //Strategy with Ground Effect aerodynamics
@@ -185,14 +197,15 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        double expectedSpeed = 330;
-       assertTrue("High speeds",
+       assertTrue(
                testCar.getOverallSpeed(roadTrack, WeatherCondition.DRY) >= expectedSpeed * 0.9);
    }
 
+   @DisplayName("Test drag is accounted for")
    @Test
    public void testDrag() {
        //Strategy with Drag AeroPackage
@@ -202,15 +215,16 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue(strategy.getTotalTime() > 0);
 
        //Check Drag
        double expectedTopSpeed = 345; // DRS system top speed
-       assertTrue("High top speed with DRS",
+       assertTrue(
                testCar.getOverallSpeed(roadTrack, WeatherCondition.DRY) >= expectedTopSpeed * 0.9);
    }
 
+   @DisplayName("Hybrid aerodynamics")
    @Test
    public void testHybrid() {
        //Strategy with Hybrid aerodynamics
@@ -220,19 +234,19 @@ public class RaceStrategyTest {
 
        RaceStrategy strategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
 
-       assertTrue("Strategy is valid", strategy.isValid());
-       assertTrue("Total time is positive", strategy.getTotalTime() > 0);
+       assertTrue(strategy.isValid());
+       assertTrue( strategy.getTotalTime() > 0);
 
        double speed = testCar.getOverallSpeed(roadTrack, WeatherCondition.DRY);
        double fuelEfficiency = testCar.getFuelConsumptionPerLap(roadTrack, WeatherCondition.DRY);
        double cornering = testCar.getCornering();
 
        //Check metrics
-       assertTrue("Has balanced speed",
+       assertTrue(
                speed >= 300 && speed <= 340);
-       assertTrue("Has good fuel efficiency",
+       assertTrue(
                fuelEfficiency <= 2.0);
-       assertTrue("Has decent cornering",
+       assertTrue(
                cornering >= 5.0);
    }
 

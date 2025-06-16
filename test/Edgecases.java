@@ -181,20 +181,20 @@ public class Edgecases {
             testTrack = new Track("test", "testtype",40,5.67,100,4);
         }
 
-        @DisplayName("test nonstandard type")
+        @DisplayName("Test nonstandard type")
         @Test
         void testTrackNonStandardType(){
             assertThrows(IllegalArgumentException.class, () -> new Track("test", "testtype",-1,-1,-1,-1));
         }
 
-        @DisplayName("test precision values are the same when retrived")
+        @DisplayName("Test precision values are the same when retrived")
         @Test
         void precisionValuesForTrackLength(){
             testTrack = new Track("test", "testtype",10,5.123456789,-1,-1);
             assertEquals(5.123456789,testTrack.getLapLength());
         }
 
-        @DisplayName("test that negative values cant be used in the constructor")
+        @DisplayName("Test that negative values cant be used in the constructor")
         @Test
         void invalidNegativeValues(){
             assertThrows(IllegalArgumentException.class, () -> new Track("test", "testtype",-1,-1,-1,-1));
