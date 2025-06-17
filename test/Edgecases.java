@@ -45,7 +45,7 @@ public class Edgecases {
         @DisplayName("Test getDisplayName")
         @Test
         public void testGetDisplayName() {
-            assertEquals("STANDARD_AERODYNAMICS",aeroPackage.getDisplayName());
+            assertEquals("STANDARD AERODYNAMICS",aeroPackage.getDisplayName());
         }
 
         @DisplayName("Test values for standard Aerodynamics")
@@ -84,14 +84,14 @@ public class Edgecases {
             assertEquals(0,tyres.getCurrentWear(),0.001);
         }
 
-        @DisplayName("Test wear cant be negative")
+        @DisplayName("Test wear cant be extreme")
         @Test
         void testTyreWearCantBeTooHigh() {
             tyres.addWear(10000.0);
             assertEquals(100,tyres.getCurrentWear(),0.001);
         }
 
-        @DisplayName("Test wear cant be negative")
+        @DisplayName("Test Grip multiplier cant be negative")
         @Test
         void testTyreGripMultiplierCantBeNegative() {
             tyres.addWear(100000.0);
@@ -261,7 +261,7 @@ public class Edgecases {
             );
         }
 
-        @DisplayName("Test null values throw IllegalArg exp")
+        @DisplayName("Test null values throw IllegalArg exp when adding a pitstop")
         @Test
         void testNullValues(){
             assertThrows(NullPointerException.class, () -> raceStrategy.addPitStop(null));
