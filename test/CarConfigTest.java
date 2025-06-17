@@ -23,6 +23,15 @@ public class CarConfigTest {
         assertEquals(AeroPackage.STANDARD_AERODYNAMICS, testCar.getAeroKit().getPackage());
     }
     
+    @Test
+    @DisplayName("Car name is set correctly")
+    void testCarName() {
+        assertEquals("Test Car", testCar.getName());
+        
+        RaceCar namedCar = new RaceCar("Lightning McQueen");
+        assertEquals("Lightning McQueen", namedCar.getName());
+    }
+    
     @ParameterizedTest
     @EnumSource(EngineType.class)
     @DisplayName("All engine types can be configured")

@@ -1,16 +1,8 @@
 
-//import org.junit.Before;
-//import org.junit.Test;
-//import static org.junit.Assert.*;
-//import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -278,5 +270,74 @@ public class RaceStrategyTest {
 
        assertTrue(fuelOnly.getTimeDelay() < fuelAndTyres.getTimeDelay());
        assertTrue(tyresOnly.getTimeDelay() < fuelAndTyres.getTimeDelay());
+   }
+
+   @Test
+   @DisplayName("Fuel management during race strategy")
+   void testFuelManagement() {
+       testCar.customizeEngine(EngineType.STANDARD);
+       testCar.customizeTyres(TyreType.MEDIUM);
+       testCar.customizeAero(AeroPackage.STANDARD_AERODYNAMICS);
+
+       double maxCapacity = testCar.getMaxFuelCapacity();
+
+       testCar.consumeFuel(50.0);
+       assertTrue(testCar.getCurrentFuel() == maxCapacity - 50.0);
+
+       testCar.refuel(30.0);
+       assertTrue(testCar.getCurrentFuel() == maxCapacity - 20.0);
+   }
+
+   @Test
+   @DisplayName("Fuel constraints during pit stops")
+   void testFuelConstraints() {
+       testCar.customizeEngine(EngineType.TURBOCHARGED);
+       
+       double maxCapacity = testCar.getMaxFuelCapacity();
+       
+       testCar.consumeFuel(200.0);
+       assertTrue(testCar.getCurrentFuel() == 0.0);
+       
+       testCar.refuel(150.0);
+       assertTrue(testCar.getCurrentFuel() == maxCapacity);
+       
+       testCar.consumeFuel(25.0);
+       testCar.refuel(50.0);
+       assertTrue(testCar.getCurrentFuel() == maxCapacity);
+   }
+
+   @Test
+   @DisplayName("Fuel consumption affects race strategy")
+   void testFuelStrategy() {
+       testCar.customizeEngine(EngineType.HYBRID);
+       testCar.customizeTyres(TyreType.MEDIUM);
+       testCar.customizeAero(AeroPackage.LOW_DRAG_PACKAGE);
+       
+       double efficientFuelPerLap = testCar.getFuelConsumptionPerLap(roadTrack, WeatherCondition.DRY);
+       RaceStrategy efficientStrategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
+       
+       testCar.customizeEngine(EngineType.TURBOCHARGED);
+       testCar.customizeTyres(TyreType.SOFT);
+       testCar.customizeAero(AeroPackage.EXTREME_DOWNFORCE);
+       
+       double hungryFuelPerLap = testCar.getFuelConsumptionPerLap(roadTrack, WeatherCondition.DRY);
+       RaceStrategy hungryStrategy = optimizer.optimizeStrategy(testCar, roadTrack, WeatherCondition.DRY);
+       
+       assertTrue(hungryFuelPerLap > efficientFuelPerLap);
+       assertTrue(hungryStrategy.getPitStops().size() >= efficientStrategy.getPitStops().size());
+   }
+
+   @Test
+   @DisplayName("Race strategy validity can be set")
+   void testSetValid() {
+       RaceStrategy strategy = new RaceStrategy();
+       
+       assertTrue(strategy.isValid());
+       
+       strategy.setValid(false);
+       assertFalse(strategy.isValid());
+       
+       strategy.setValid(true);
+       assertTrue(strategy.isValid());
    }
 }
