@@ -77,6 +77,18 @@ public class Edgecases {
             assertEquals(1.2,tyreType.corneringMultiplier,0.001);
         }
 
+        @DisplayName("Test get name gets name of tyres")
+        @Test
+        void testGetNeedsReplacement() {
+            assertFalse(tyres.needsReplacement());
+            tyres.addWear(100);
+            assertTrue(tyres.needsReplacement());
+            tyres.replace();
+            assertFalse(tyres.needsReplacement());
+        }
+
+
+
         @DisplayName("Test wear cant be negative")
         @Test
         void testTyreWearCantBeNegative() {
@@ -185,6 +197,12 @@ public class Edgecases {
         @Test
         void testTrackNonStandardType(){
             assertThrows(IllegalArgumentException.class, () -> new Track("test", "testtype",-1,-1,-1,-1));
+        }
+
+        @DisplayName("Test Track getName")
+        @Test
+        void testTrackGetName(){
+            assertEquals("test",testTrack.getName());
         }
 
         @DisplayName("Test precision values are the same when retrived")
